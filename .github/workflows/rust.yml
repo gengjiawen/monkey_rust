@@ -8,11 +8,24 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: npx envinfo
       - name: Build
         run: cargo build
       - name: Run tests
         run: cargo test
+  build-wasm:
+    runs-on: ubuntu-latest
+    container: gengjiawen/node-build:wasm
+    steps:
+      - uses: actions/checkout@v2
+      - run: npx envinfo
+      - name: Run tests
+        run: |
+          export PATH=/root/.cargo/bin:$PATH
+          ls -lh ~
+          npx envinfo
+          cd wasm && wasm-pack build
